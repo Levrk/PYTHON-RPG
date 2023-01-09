@@ -1,12 +1,11 @@
 import random
 import time
+
 from GAME1 import lettergame
 
 # BEAN WORLD REMASTERED - Lev Roland-Kalb
 # Run Program and follow along below to play the game
-# Last updated: 10/20/2022
-
-
+# Last updated: 1/9/2023
 
 class monster():
     def __init__(self,type,name,health,beans,exp,level,reward):
@@ -64,7 +63,7 @@ class monster():
         self.health += heal
 
     def random_attack(self):
-        ####
+        ####generates a random attack 
         return random.choice(monsterattacks[str(self.type)]['attacklist'])
 
     def set_condition(self,condition,permanence):
@@ -77,6 +76,7 @@ class monster():
         self.conditiontime = permanence
 
     def print_condition(self):
+        #prints conditions
         if self.conditiontime > 0:
             print('')
             print('Your opponent is ' , str(self.condition), 'for the next ' , str(self.conditiontime) ,' turns')
@@ -126,6 +126,9 @@ class monster():
             self.take_damage(5)
             print('The opponent take 5 bleeding damage')
             self.print()
+
+
+
 
 class user ():
     def __init__(self,name,weapon,health,beans,maxhealth):
@@ -253,8 +256,7 @@ class user ():
         print('<><><><><><><><><><>')
         print(self.name)
         print('Health: ', str(self.health))
-        #print('Beans: ', str(self.beans))
-        #print("Weapon: " , str(self.weapon))
+        print("Weapon: " , str(self.weapon))
 
 
     def get_condition(self):
@@ -328,6 +330,7 @@ class user ():
 
     def next_turn(self):
         self.conditiontime -= 1
+
 
 class battle():
     def __init__(self, user, monster,monsterinstance):
@@ -525,10 +528,9 @@ class battle():
         chest(self.monsterinstance.reward)
         self.user.gain_beans(self.monsterinstance.get_beans())
         self.user.gain_exp(self.monsterinstance.get_exp(),self.user.exp)
-
-class bossbattle(battle):
-    def __str__(self):
-        return "Final Battle: \n " + str(self.user.get_name()) + ' vs. ' + str(self.monsterinstance.get_name() + ' the ' + str(self.monsterinstance.type))
+#class bossbattle(battle):
+   # def __str__(self):
+   #     return "Final Battle: \n " + str(self.user.get_name()) + ' vs. ' + str(self.monsterinstance.get_name() + ' the ' + str(self.monsterinstance.type))
 
 
 def battlesequence(battle):
@@ -707,7 +709,6 @@ Wraith = {'Haunt':{'damage':[0,0,0], 'blockable':True, 'heal':[0,0,0], 'aim':0, 
             'text':'The monster floats up into the air while crooning a haunting tune'},
          'Nightmare':{'damage':[8,12,16], 'blockable':False, 'heal':[6,8,10], 'aim':0, 'conditions':['weak',1],
             'text':'The ghoul penetrates your mind castle, assaulting your very existence'}, 'attacklist':['Haunt','Nightmare']}
-###need to be checked VVV
 
 FrozenGolem = {'Smash':{'damage':[15,20,22], 'blockable':True, 'heal':[0,0,0], 'aim':0, 'conditions':['',0],
             'text':'The beast leans back before smashing both of it\'s massive fists into the ground'},
@@ -1120,6 +1121,7 @@ def maingame():
     intro()
 
 
+
     while True:
         waiting_room()
         print('')
@@ -1156,41 +1158,43 @@ def maingame():
             roomscompleted = room_complete(5,roomscompleted)
         elif x == '6':
             entrance(6)
-            print('room 6')
+            print(battle5)
             battlesequence(battle5)
             roomscompleted = room_complete(6, roomscompleted)
         elif x == '7':
             entrance(7)
-            print('room 7')
+            print('Time winds back and you find yourself back in the main room')
+            print('That was Strange...')
             roomscompleted = room_complete(7, roomscompleted)
         elif x == '8':
             entrance(8)
-            print('room 8')
+            print(battle6)
             battlesequence(battle6)
             roomscompleted = room_complete(8, roomscompleted)
         elif x == '9':
             entrance(9)
-            print('room 9')
+            print(battle7)
             battlesequence(battle7)
             roomscompleted = room_complete(9, roomscompleted)
         elif x == '10':
             entrance(10)
-            print('room 10')
+            print(battle10)
             battlesequence(battle8)
             roomscompleted = room_complete(10, roomscompleted)
         elif x == '11':
             entrance(11)
-            print('room 11')
+            print(battle9)
             battlesequence(battle9)
             roomscompleted = room_complete(11, roomscompleted)
         elif x == '12':
             entrance(12)
-            print('room 12')
+            print(battle10)
             battlesequence(battle10)
             roomscompleted = room_complete(12, roomscompleted)
             print('room 12')
         elif x == 'Save' or x == 'save':
-            print('Save')
+            print('This feature has yet to be implemented')
+            print('Please try again soon :)')
         elif x == 'Stats' or x == 'stats':
             complete_stats()
         elif x == 'Intro' or x == 'intro':
@@ -1198,18 +1202,11 @@ def maingame():
         elif x == 'Inventory' or x == 'inventory':
             equipmentcheck()
         elif x == 'Reset' or x == 'reset':
-            print('reset')
+            print('This feature has yet to be implemented')
+            print('Please try again soon :)')
 
 
 maingame()
-
-
-###Future Goals
-#####write a system for loading and saving character info from csv
-#### write a reset function to clear csv back to start
-#####write battle intro and outros
-###END OF THE GAME???
-
 
 
 
