@@ -1,536 +1,14 @@
 import random
 import time
 
+from battle import battle
+from user import user
+from monster import monster
 from GAME1 import lettergame
 
 # BEAN WORLD REMASTERED - Lev Roland-Kalb
 # Run Program and follow along below to play the game
 # Last updated: 1/9/2023
-
-class monster():
-    def __init__(self,type,name,health,beans,exp,level,reward):
-        """
-        :param type: type of creature ()
-        :param name: name of the monster
-        :param health:
-        :param beans: beans awarded upon victory
-        :param exp:
-        level = level for damage/heal
-        """
-        self.level = level
-        self.name = name
-        self.attacks = monsterattacks[type]
-        self.health = health
-        self.beans = beans
-        self.exp = exp
-        self.type = type
-        self.conditiontime = 0
-        self.condition = ''
-        self.permcondition = ''
-        self.reward = reward
-
-
-    def next_turn(self):
-        self.conditiontime -= 1
-
-    def get_level(self):
-        return self.level
-
-    def get_health(self):
-        return self.health
-
-    def get_beans(self):
-        return self.beans
-
-    def get_exp(self):
-        return self.exp
-
-    def get_name(self):
-        return self.name
-
-    def take_damage(self,damage):
-        self.health -= damage
-
-
-    def print(self):
-        print('<><><><><><><><><><><><><><><>')
-        print("Monster: " , str(self.name), ' the ', str(self.type))
-        print("Health: ", str(self.health))
-
-    def heal(self,heal):
-        if heal > 0:
-            print('the opponent heals ', heal, ' HP')
-        self.health += heal
-
-    def random_attack(self):
-        ####generates a random attack 
-        return random.choice(monsterattacks[str(self.type)]['attacklist'])
-
-    def set_condition(self,condition,permanence):
-        """
-        :param condition:
-        :param permanence: how many turns
-        :return:
-        """
-        self.condition = condition
-        self.conditiontime = permanence
-
-    def print_condition(self):
-        #prints conditions
-        if self.conditiontime > 0:
-            print('')
-            print('Your opponent is ' , str(self.condition), 'for the next ' , str(self.conditiontime) ,' turns')
-        elif self.conditiontime > 1000:
-            print('')
-            print('Your opponent is ', str(self.condition), ' until the end of time')
-        else:
-            print('')
-            print('The opponent has no lasting conditions')
-
-    def get_condition(self):
-        return [self.condition,self.conditiontime]
-
-    def heal_user(self,heal):
-        self.user.health += heal
-
-    def condition_check_attackD(self, damage):
-        if self.condition == 'weak':
-            damage -= 5
-            return int(damage)
-        elif self.condition == 'enraged':
-            damage += 10
-            return int(damage)
-        else:
-            return damage
-
-    def condition_check_attackC(self, chance):
-        if self.condition == 'focus':
-            chance += 10
-            return int(chance)
-        elif self.condition == 'slowed':
-            chance -= 10
-            return int(chance)
-        else:
-            return chance
-    def set_perm_condition(self,condition,time):
-        ### changed to not perm
-        self.permcondition = condition
-        self.conditiontime = time
-
-    def condition_check_perm(self):
-        if self.permcondition == 'burning' and self.conditiontime > 0:
-            self.take_damage(10)
-            print('The opponent take 10 burning damage')
-            self.print()
-        elif self.permcondition == 'bleeding' and self.conditiontime > 0:
-            self.take_damage(5)
-            print('The opponent take 5 bleeding damage')
-            self.print()
-
-
-
-
-class user ():
-    def __init__(self,name,weapon,health,beans,maxhealth):
-        self.name = name
-        self.weapon = weapon
-        self.health = health
-        self.beans = beans
-        self.conditiontime = 0
-        self.condition = ''
-        self.inventory = ['Rusty Sword']
-        self.permcondition = ''
-        self.maxhealth = maxhealth
-        self.exp = 0
-
-    def __repr__(self):
-        return self.name + '\n' +'Health: ' + str(self.health) + '\n'
-
-
-
-    def get_inventory(self):
-        count = 1
-        for i in self.inventory:
-            print(count ,'. ',i + ' - ' + (userweapons[i]['weaponrating']))
-            count += 1
-
-    def acquire(self, item):
-        self.inventory.append(item)
-        print('you acquired the ', str(item))
-
-    def equip(self,item):
-            if int(item) == 0:
-                raise Exception('nope')
-            self.weapon = self.inventory[int(item) - 1]
-            print(str(self.inventory[int(item) - 1]) , 'equipped')
-
-
-    def gain_beans(self,beans):
-        self.beans += beans
-
-    def get_health(self):
-        return self.health
-
-    def gain_health(self,health):
-        self.health += health
-        if self.health > self.maxhealth:
-            self.health = self.maxhealth
-            print('You are at maximum health')
-            return
-        if health > 0:
-            print('*-*-* ',str(self.name), ' + ', str(health), " hp *-*-*")
-
-    def gain_exp(self,exp,prev):
-        """
-        :param exp: experience gained
-        :param prev: experience before gaining
-        :return: player gains experience and levels up if necessary
-        """
-        self.exp += exp
-        if 150 < self.exp <= 300 :
-
-            if prev < 150:
-                print('Level up !!!')
-                print('')
-                time.sleep(1)
-                print('you have reached level 2')
-                print('')
-                self.health = 120
-                self.maxhealth = 120
-            else:
-                print('Level 2')
-                print('Max Health: 120')
-                self.maxhealth = 120
-        if 300 < self.exp <= 600:
-            if prev < 300:
-                print('Level up !!!')
-                print('')
-                time.sleep(1)
-                print('you have reached level 3')
-                print('')
-                print('Max Health increased to 150')
-                print('')
-                self.health = 150
-                self.maxhealth = 150
-            else:
-                print('Level 3')
-                print('Max Health: 150')
-                self.maxhealth = 150
-        if 600 < self.exp <= 1000:
-
-            if prev < 600:
-                print('Level up !!!')
-                print('')
-                time.sleep(1)
-                print('you have reached level 4')
-                print('')
-                print('Max Health increased to 200')
-                print('')
-                self.health = 200
-                self.maxhealth = 200
-            else:
-                print('Level 4')
-                print('Max Health: 200')
-                self.maxhealth = 200
-
-    def get_beans(self):
-        return self.beans
-
-    def get_name(self):
-        return self.name
-
-    def get_weapon(self):
-        return self.weapon
-
-    def take_damage(self,damage):
-        self.health -= damage
-        if damage > 0:
-            print('You take ', damage, ' damage')
-        if self.health < 1:
-            death()
-
-
-    def print(self):
-        time.sleep(1)
-        print('')
-        print('<><><><><><><><><><>')
-        print(self.name)
-        print('Health: ', str(self.health))
-        print("Weapon: " , str(self.weapon))
-
-
-    def get_condition(self):
-        return [self.condition,self.conditiontime]
-
-    def set_condition(self,condition,permanence):
-        """
-        :param condition:
-        :param permanence: how many turns
-        :return:
-        """
-        self.condition = condition
-        self.conditiontime = permanence
-
-    def print_condition(self):
-        if self.conditiontime > 0:
-            print('')
-            print('You are ' , str(self.condition), 'for the next ' , str(self.conditiontime) ,' turns')
-        elif self.conditiontime > 1000:
-            print('')
-            print('You are ', str(self.condition), ' until the end of time')
-        else:
-            print('')
-            print('You have no lasting conditions')
-
-    def reset_conditions(self):
-        self.conditiontime = 0
-        self.condition = 0
-        self.permcondition = ''
-
-    def set_perm_condition(self,condition,time):
-        """
-        :param condition: condition being inflicted
-        :param time: permanence
-        :return: void
-        """
-        self.permcondition = condition
-        self.conditiontime = time
-
-    def condition_check_perm(self):
-        ### changed from perm to not
-        time.sleep(1)
-        if self.permcondition == 'burning' and self.conditiontime > 0:
-            self.take_damage(10)
-            print('** burning **')
-            self.print()
-        elif self.permcondition == 'bleeding' and self.conditiontime > 0:
-            self.take_damage(5)
-            print('** bleeding **')
-            self.print()
-
-    def condition_check_attackD(self,damage):
-        if self.condition == 'weak':
-            damage -= 5
-            return int(damage)
-        elif self.condition == 'enraged':
-            damage += 10
-            return int(damage)
-        else :
-            return damage
-
-    def condition_check_attackC(self,chance):
-        if self.condition == 'focus':
-            chance += 10
-            return int(chance)
-        elif self.condition == 'slowed':
-            chance -= 10
-            return int(chance)
-        else :
-            return chance
-
-    def next_turn(self):
-        self.conditiontime -= 1
-
-
-class battle():
-    def __init__(self, user, monster,monsterinstance):
-        self.monster = monster
-        self.user = user
-        self.monsterinstance = monsterinstance
-
-    def __str__(self):
-        return str(self.user.get_name()) + ' vs. '+ str(self.monsterinstance.get_name() + ' the ' + str(self.monsterinstance.type))
-
-    def get_monster(self):
-        return str(self.monsterinstance)
-
-    def get_attack(self):
-        print('')
-        print('*-*-*-*-* *-*-*-*-* *-*-*-*-* ATTACK *-*-*-*-* *-*-*-*-*' )
-        time.sleep(1)
-
-        print('')
-        print('Choose your attack')
-        print(userweapons[self.user.get_weapon()]['attacklist'])
-        print('')
-        while True:
-            choice = input('Select an attack: ')
-            if choice in userweapons[self.user.get_weapon()]['attacklist']:
-                break
-        return choice
-    def condition_application_from_monster(self,attack):
-        # checks who the condition from monster attack is supposed to be applied to and applies it
-        if (self.monster)[attack]['conditions'][0] != '':
-            if (self.monster)[attack]['conditions'][0] == 'enraged' or (self.monster)[attack]['conditions'][0] == 'focused':
-                self.monsterinstance.set_condition((self.monster)[attack]['conditions'][0],
-                                                   (self.monster)[attack]['conditions'][1])
-                self.monsterinstance.print_condition()
-            else:
-                self.user.set_condition((self.monster)[attack]['conditions'][0],
-                                        (self.monster)[attack]['conditions'][1])
-                self.user.print_condition()
-        if (self.monster)[attack]['conditions'][0] != '':
-            if (self.monster)[attack]['conditions'][0] == 'bleeding':
-                self.user.set_perm_condition('bleeding', (self.monster)[attack]['conditions'][1])
-            if (self.monster)[attack]['conditions'][0] == 'burning':
-                self.user.set_perm_condition('burning', (self.monster)[attack]['conditions'][1])
-
-    def condition_application_check(self, attack):
-        #checks who the condition from user weapon is supposed to be applied to and applies it
-        if (userweapons[self.user.weapon][attack]['conditions'][0]) != '':
-            if userweapons[self.user.weapon][attack]['conditions'][0] == 'enraged' or userweapons[self.user.weapon][attack]['conditions'][0] == 'focused':
-                self.user.set_condition((userweapons[self.user.weapon][attack]['conditions'][0]),
-                                        (userweapons[self.user.weapon][attack]['conditions'][1]))
-                self.user.print_condition()
-            else:
-                self.monsterinstance.set_condition((userweapons[self.user.weapon][attack]['conditions'][0]),
-                                                   (userweapons[self.user.weapon][attack]['conditions'][1]))
-                self.monsterinstance.print_condition()
-        if (userweapons[self.user.weapon][attack]['conditions'][0]) != '':
-            if (userweapons[self.user.weapon][attack]['conditions'][0]) == 'bleeding':
-                self.monsterinstance.set_perm_condition('bleeding',(userweapons[self.user.weapon][attack]['conditions'][1]))
-            if (userweapons[self.user.weapon][attack]['conditions'][0]) == 'burning':
-                self.monsterinstance.set_perm_condition('burning',(userweapons[self.user.weapon][attack]['conditions'][1]))
-    def hit_print(self,hit,damage,heal):
-        if damage > 0:
-            print(hit, damage, 'damage')
-            if heal > 0:
-                print('The spell heals ', heal, 'health')
-        elif damage < 0:
-            print('uh oh')
-        elif heal > 0 :
-            print(hit, heal, 'health')
-        else:
-            print(hit)
-
-
-    def attack(self,attack):
-        """
-        :param attack: gets attack from get_attack
-        damage/chance/text etc are all inherited from user class accessing the userweapons dictionary
-        :return: no return statement necessary
-        """
-        ####get attack stats below
-        if 'True':
-            damage = userweapons[self.user.get_weapon()][attack]['damage']
-            chance = userweapons[self.user.get_weapon()][attack]['chance']
-            text = userweapons[self.user.get_weapon()][attack]['text']
-            heal = userweapons[self.user.get_weapon()][attack]['heal']
-            hit = userweapons[self.user.get_weapon()][attack]['hit']
-            chance = self.user.condition_check_attackC(chance)
-            damage = self.user.condition_check_attackD(damage)
-
-        print('')
-        print(text)
-        x = random.randint(0,100)
-        time.sleep(1.5)
-        ####this is checking if the opponent confused
-        if (self.monsterinstance.get_condition()[0] != 'confused' or self.monsterinstance.get_condition()[1] < 1):
-            if x < chance:
-                print('')
-                print('Your attempt was successful!')
-                print('')
-                if userweapons[self.user.get_weapon()]['name'] == 'Staff of Chaos':
-                    x = random.randint(-2,4)
-                    damage = damage * x
-                self.hit_print(hit,damage,heal)
-                self.monsterinstance.take_damage(damage)
-                self.condition_application_check(attack)
-                self.user.gain_health(heal)
-                self.monsterinstance.print()
-                self.user.print()
-            else:
-                print('')
-                print('You missed :(')
-        else:
-            print('')
-            print('Your attempt was successful!')
-            if userweapons[self.user.get_weapon()]['name'] == 'Staff of Chaos':
-                x = random.randint(-2, 4)
-                damage = damage * x
-            print('')
-            self.hit_print(hit,damage,heal)
-            self.user.gain_health(heal)
-            self.condition_application_check(attack)
-            self.monsterinstance.take_damage(damage)
-            self.monsterinstance.print()
-            self.user.print()
-
-
-    def defense(self):
-        time.sleep(1.5)
-        print('')
-        print('*-*-*-*-* *-*-*-*-* *-*-*-*-* DEFENSE *-*-*-*-* *-*-*-*-*')
-        attack = self.monsterinstance.random_attack()
-        if self.monsterinstance.get_condition()[0] == 'frozen' and self.monsterinstance.get_condition()[1] > 0:
-            print('The enemy is frozen')
-        elif ((self.monster)[attack]['blockable'] == True) and (self.user.get_condition()[0] != 'confused' or self.user.get_condition()[1] < 1):
-            print('')
-            print((self.monster)[attack]['text'])
-            print('')
-            print('Choose your defense')
-            print(userweapons[self.user.get_weapon()]['deflist'])
-            print('')
-            while True:
-                choice = input('Select an defense: ')
-                if choice in userweapons[self.user.get_weapon()]['deflist']:
-                    break
-            damage = (self.monster)[attack]['damage'][self.monsterinstance.level-1]
-            heal = (self.monster)[attack]['heal'][self.monsterinstance.get_level()-1]
-            aim = (self.monster)[attack]['aim']
-            chance = (userweapons[self.user.weapon][choice]['chance']) - aim
-            damage = self.monsterinstance.condition_check_attackD(damage)
-            chance = self.user.condition_check_attackC(chance)
-            response = (userweapons[self.user.weapon][choice]['damage'])
-            x = random.randint(0, 100)
-            time.sleep(1.5)
-            if x < chance:
-                print('')
-                print('Your attempt was successful!')
-                damage = int(damage * (userweapons[self.user.weapon][choice]['damagetaken']))
-                self.user.take_damage(damage)
-                self.monsterinstance.take_damage(response)
-                if response > 0:
-                    print('The enemy takes ', response, ' damage')
-                self.user.print()
-                self.monsterinstance.print()
-                print('')
-            else:
-                print('')
-                print('Your ', choice , ' failed')
-                print('')
-                self.condition_application_from_monster(attack)
-                self.user.take_damage(damage)
-                self.monsterinstance.heal(heal)
-                self.user.print()
-        else:
-            time.sleep(1.5)
-            print('')
-            print((self.monster)[attack]['text'])
-            print('')
-            damage = (self.monster)[attack]['damage'][self.monsterinstance.level-1]
-            heal = (self.monster)[attack]['heal'][self.monsterinstance.get_level()-1]
-            damage = self.monsterinstance.condition_check_attackD(damage)
-            print('')
-
-
-            self.user.take_damage(damage)
-            self.condition_application_from_monster(attack)
-            self.monsterinstance.take_damage
-            self.monsterinstance.heal(heal)
-            self.user.print()
-            self.monsterinstance.print()
-
-    def reward(self):
-        self.user.set_condition('',0)
-        self.user.set_perm_condition('', 0)
-        time.sleep(1)
-        chest(self.monsterinstance.reward)
-        self.user.gain_beans(self.monsterinstance.get_beans())
-        self.user.gain_exp(self.monsterinstance.get_exp(),self.user.exp)
-#class bossbattle(battle):
-   # def __str__(self):
-   #     return "Final Battle: \n " + str(self.user.get_name()) + ' vs. ' + str(self.monsterinstance.get_name() + ' the ' + str(self.monsterinstance.type))
 
 
 def battlesequence(battle):
@@ -569,7 +47,7 @@ rustysword = {'name':'Rusty Sword', 'attacklist':['heavy','light'],'deflist':['p
               'heavy':{'conditions':['enraged',0],'damage':18,'chance':45, 'heal':0,
                      'text':'You lunge forward swinging the rusty blade with all your might',
                        'hit':'Your heavy attack hits for '},
-              'light':{'conditions':['',0],'damage':10,'chance':70, 'heal':0,
+              'light':{'conditions':['',0],'damage':1000,'chance':70, 'heal':0,
                      'text':'With a quick step you thrust the blade at your opponent',
                        'hit':'Your light attack hits for '},
               'parry':{'damagetaken':0,'chance':35,'damage':5}, 'dodge':{'damagetaken':0,'chance':50,'damage':0},
@@ -731,19 +209,19 @@ monsterattacks = {'Goblin':Goblin,"Beast":Beast,'Cockatrice':Cockatrice,'Wraith'
 
 ####monsterinstances
 ################### type      name   health  beans, exp level reward
-monster1 = monster('Goblin','Reginald',50,35,50,1,'Sharpened Blade')
-monster2 = monster('Beast', 'Archibald',60,45,75,1,'Flame Staff')
-monster3 = monster('Cockatrice', 'Chesmund',65,60,80,1,'Sword of Focus')
-monster4 = monster('Wraith', 'Buford',80,50,90,1,'Mallet of Malice')
-monster5 = monster('Frozen Golem', 'Winston',80,75,100,1,'Sanguine Sword')
-monster6 = monster('Demon', 'Martin',100,90,100,2,'Sword of Blood and Flame')
-monster7 = monster('Wraith', 'Alfred',110,100,110,2,'Lava Staff')
-monster8 = monster('Fire Spirit','Bartholomew', 90,100,100,1,'Shadow Dagger')
-monster9 = monster('Goblin','Gerald',100,80,150,3, 'Sword and Shield')
-monster10 = monster('Cockatrice','Baxter',130,120,140,2,'reward')
+monster1 = monster('Goblin','Reginald',50,35,50,1,'Sharpened Blade',monsterattacks)
+monster2 = monster('Beast', 'Archibald',60,45,75,1,'Flame Staff',monsterattacks)
+monster3 = monster('Cockatrice', 'Chesmund',65,60,80,1,'Sword of Focus',monsterattacks)
+monster4 = monster('Wraith', 'Buford',80,50,90,1,'Mallet of Malice',monsterattacks)
+monster5 = monster('Frozen Golem', 'Winston',80,75,100,1,'Sanguine Sword',monsterattacks)
+monster6 = monster('Demon', 'Martin',100,90,100,2,'Sword of Blood and Flame',monsterattacks)
+monster7 = monster('Wraith', 'Alfred',110,100,110,2,'Lava Staff',monsterattacks)
+monster8 = monster('Fire Spirit','Bartholomew', 90,100,100,1,'Shadow Dagger',monsterattacks)
+monster9 = monster('Goblin','Gerald',100,80,150,3, 'Sword and Shield',monsterattacks)
+monster10 = monster('Cockatrice','Baxter',130,120,140,2,'reward',monsterattacks)
 
 ###playerinstance
-player1 = user('Borgus','Rusty Sword',100,0,100)
+player1 = user('Borgus','Rusty Sword',100,0,100,userweapons)
 
 battle1 = battle(player1,Goblin,monster1)
 battle2 = battle(player1,Beast,monster2)
@@ -789,20 +267,7 @@ def equipmentcheck ():
     print('')
     time.sleep(2)
 
-def chest(item):
-    time.sleep(1)
-    print('')
-    print('  ------------------------------')
-    print(' |       |              |       |')
-    print(' |----------[  <()>  ]----------|    ')
-    print(' |       |              |       |')
-    print(' |       |              |       |')
-    print('| _______|______________|_______ |')
-    input('press enter to open...')
 
-    player1.acquire(item)
-    print('')
-    time.sleep(1)
 
 def title():
     input('press enter')
@@ -1117,7 +582,9 @@ def maingame():
 
     roomscompleted = 0
     damagetaken = 0
+    ##
     title()
+
     intro()
 
 
@@ -1206,7 +673,5 @@ def maingame():
             print('Please try again soon :)')
 
 
+
 maingame()
-
-
-
