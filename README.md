@@ -9,12 +9,17 @@ The doors can be opened in any order but one should know that difficulty increas
 
 Needs work
 [x] seperate classes into different .py files
+
 [] add more detailed documentation
+
 [] create endgame
 
 Future Goals
+
 [] write a system for loading and saving character info from csv
+
 [] write a reset function to clear csv back to start
+
 [] write more specific battle intro and outros
 
 [x] = completed
