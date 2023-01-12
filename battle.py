@@ -7,9 +7,9 @@ class battle():
     
 
     def __init__(self, user, monster,monsterinstance):
-        self.monster = monster
-        self.user = user
-        self.monsterinstance = monsterinstance
+        self.monster = monster #monster type
+        self.user = user #user
+        self.monsterinstance = monsterinstance #monster instance
 
     def __str__(self):
         return str(self.user.get_name()) + ' vs. '+ str(self.monsterinstance.get_name() + ' the ' + str(self.monsterinstance.type))
@@ -18,19 +18,22 @@ class battle():
         return str(self.monsterinstance)
 
     def get_attack(self):
+        #gets attack from weapon options and returns it
         print('')
         print('*-*-*-*-* *-*-*-*-* *-*-*-*-* ATTACK *-*-*-*-* *-*-*-*-*' )
         time.sleep(1)
 
         print('')
         print('Choose your attack')
-        print(self.user.userweapons[self.user.get_weapon()]['attacklist'])
+        print(self.user.weapons[self.user.get_weapon()]['attacklist'])
         print('')
         while True:
             choice = input('Select an attack: ')
-            if choice in self.user.userweapons[self.user.get_weapon()]['attacklist']:
+            if choice in self.user.weapons[self.user.get_weapon()]['attacklist']:
                 break
         return choice
+
+
     def condition_application_from_monster(self,attack):
         # checks who the condition from monster attack is supposed to be applied to and applies it
         if (self.monster)[attack]['conditions'][0] != '':
@@ -50,21 +53,23 @@ class battle():
 
     def condition_application_check(self, attack):
         #checks who the condition from user weapon is supposed to be applied to and applies it
-        if (self.user.userweapons[self.user.weapon][attack]['conditions'][0]) != '':
-            if self.user.userweapons[self.user.weapon][attack]['conditions'][0] == 'enraged' or self.user.userweapons[self.user.weapon][attack]['conditions'][0] == 'focused':
-                self.user.set_condition((self.user.userweapons[self.user.weapon][attack]['conditions'][0]),
-                                        (self.user.userweapons[self.user.weapon][attack]['conditions'][1]))
+        if (self.user.weapons[self.user.weapon][attack]['conditions'][0]) != '':
+            if self.user.weapons[self.user.weapon][attack]['conditions'][0] == 'enraged' or self.user.weapons[self.user.weapon][attack]['conditions'][0] == 'focused':
+                self.user.set_condition((self.user.weapons[self.user.weapon][attack]['conditions'][0]),
+                                        (self.user.weapons[self.user.weapon][attack]['conditions'][1]))
                 self.user.print_condition()
             else:
-                self.monsterinstance.set_condition((self.user.userweapons[self.user.weapon][attack]['conditions'][0]),
-                                                   (self.user.userweapons[self.user.weapon][attack]['conditions'][1]))
+                self.monsterinstance.set_condition((self.user.weapons[self.user.weapon][attack]['conditions'][0]),
+                                                   (self.user.weapons[self.user.weapon][attack]['conditions'][1]))
                 self.monsterinstance.print_condition()
-        if (self.user.userweapons[self.user.weapon][attack]['conditions'][0]) != '':
-            if (self.user.userweapons[self.user.weapon][attack]['conditions'][0]) == 'bleeding':
-                self.monsterinstance.set_perm_condition('bleeding',(self.user.userweapons[self.user.weapon][attack]['conditions'][1]))
-            if (self.user.userweapons[self.user.weapon][attack]['conditions'][0]) == 'burning':
-                self.monsterinstance.set_perm_condition('burning',(self.user.userweapons[self.user.weapon][attack]['conditions'][1]))
+        if (self.user.weapons[self.user.weapon][attack]['conditions'][0]) != '':
+            if (self.user.weapons[self.user.weapon][attack]['conditions'][0]) == 'bleeding':
+                self.monsterinstance.set_perm_condition('bleeding',(self.user.weapons[self.user.weapon][attack]['conditions'][1]))
+            if (self.user.weapons[self.user.weapon][attack]['conditions'][0]) == 'burning':
+                self.monsterinstance.set_perm_condition('burning',(self.user.weapons[self.user.weapon][attack]['conditions'][1]))
+    
     def hit_print(self,hit,damage,heal):
+        #prints hit message
         if damage > 0:
             print(hit, damage, 'damage')
             if heal > 0:
@@ -80,18 +85,18 @@ class battle():
     def attack(self,attack):
         """
         :param attack: gets attack from get_attack
-        damage/chance/text etc are all inherited from user class accessing the self.user.userweapons dictionary
+        damage/chance/text etc are all inherited from user class accessing the self.user.weapons dictionary
         :return: no return statement necessary
         """
         ####get attack stats below
-        if 'True':
-            damage = self.user.userweapons[self.user.get_weapon()][attack]['damage']
-            chance = self.user.userweapons[self.user.get_weapon()][attack]['chance']
-            text = self.user.userweapons[self.user.get_weapon()][attack]['text']
-            heal = self.user.userweapons[self.user.get_weapon()][attack]['heal']
-            hit = self.user.userweapons[self.user.get_weapon()][attack]['hit']
-            chance = self.user.condition_check_attackC(chance)
-            damage = self.user.condition_check_attackD(damage)
+        
+        damage = self.user.weapons[self.user.get_weapon()][attack]['damage']
+        chance = self.user.weapons[self.user.get_weapon()][attack]['chance']
+        text = self.user.weapons[self.user.get_weapon()][attack]['text']
+        heal = self.user.weapons[self.user.get_weapon()][attack]['heal']
+        hit = self.user.weapons[self.user.get_weapon()][attack]['hit']
+        chance = self.user.condition_check_attackC(chance)
+        damage = self.user.condition_check_attackD(damage)
 
         print('')
         print(text)
@@ -103,9 +108,10 @@ class battle():
                 print('')
                 print('Your attempt was successful!')
                 print('')
-                if self.user.userweapons[self.user.get_weapon()]['name'] == 'Staff of Chaos':
+                if self.user.weapons[self.user.get_weapon()]['name'] == 'Staff of Chaos':
                     x = random.randint(-2,4)
                     damage = damage * x
+                #succesful hit below
                 self.hit_print(hit,damage,heal)
                 self.monsterinstance.take_damage(damage)
                 self.condition_application_check(attack)
@@ -118,10 +124,11 @@ class battle():
         else:
             print('')
             print('Your attempt was successful!')
-            if self.user.userweapons[self.user.get_weapon()]['name'] == 'Staff of Chaos':
+            if self.user.weapons[self.user.get_weapon()]['name'] == 'Staff of Chaos':
                 x = random.randint(-2, 4)
                 damage = damage * x
             print('')
+            #succesful hit below
             self.hit_print(hit,damage,heal)
             self.user.gain_health(heal)
             self.condition_application_check(attack)
@@ -131,6 +138,7 @@ class battle():
 
 
     def defense(self):
+        #gives the user an oppurtunity to select defensive moves, calculates hit, prints and applies outcome
         time.sleep(1.5)
         print('')
         print('*-*-*-*-* *-*-*-*-* *-*-*-*-* DEFENSE *-*-*-*-* *-*-*-*-*')
@@ -142,25 +150,26 @@ class battle():
             print((self.monster)[attack]['text'])
             print('')
             print('Choose your defense')
-            print(self.user.userweapons[self.user.get_weapon()]['deflist'])
+            print(self.user.weapons[self.user.get_weapon()]['deflist'])
             print('')
+            #determines defensive move
             while True:
-                choice = input('Select an defense: ')
-                if choice in self.user.userweapons[self.user.get_weapon()]['deflist']:
+                choice = input('Select a defense: ')
+                if choice in self.user.weapons[self.user.get_weapon()]['deflist']:
                     break
             damage = (self.monster)[attack]['damage'][self.monsterinstance.level-1]
             heal = (self.monster)[attack]['heal'][self.monsterinstance.get_level()-1]
             aim = (self.monster)[attack]['aim']
-            chance = (self.user.userweapons[self.user.weapon][choice]['chance']) - aim
+            chance = (self.user.weapons[self.user.weapon][choice]['chance']) - aim
             damage = self.monsterinstance.condition_check_attackD(damage)
             chance = self.user.condition_check_attackC(chance)
-            response = (self.user.userweapons[self.user.weapon][choice]['damage'])
+            response = (self.user.weapons[self.user.weapon][choice]['damage'])
             x = random.randint(0, 100)
             time.sleep(1.5)
             if x < chance:
                 print('')
                 print('Your attempt was successful!')
-                damage = int(damage * (self.user.userweapons[self.user.weapon][choice]['damagetaken']))
+                damage = int(damage * (self.user.weapons[self.user.weapon][choice]['damagetaken']))
                 self.user.take_damage(damage)
                 self.monsterinstance.take_damage(response)
                 if response > 0:
@@ -172,11 +181,13 @@ class battle():
                 print('')
                 print('Your ', choice , ' failed')
                 print('')
+                #user takes damage/ aquires conditions
                 self.condition_application_from_monster(attack)
                 self.user.take_damage(damage)
                 self.monsterinstance.heal(heal)
                 self.user.print()
         else:
+            #if the user can not block
             time.sleep(1.5)
             print('')
             print((self.monster)[attack]['text'])
@@ -185,8 +196,6 @@ class battle():
             heal = (self.monster)[attack]['heal'][self.monsterinstance.get_level()-1]
             damage = self.monsterinstance.condition_check_attackD(damage)
             print('')
-
-
             self.user.take_damage(damage)
             self.condition_application_from_monster(attack)
             self.monsterinstance.take_damage
@@ -195,6 +204,7 @@ class battle():
             self.monsterinstance.print()
 
     def reward(self):
+        #rewards user after a succesful battle
         self.user.set_condition('',0)
         self.user.set_perm_condition('', 0)
         time.sleep(1)

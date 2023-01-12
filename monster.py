@@ -3,27 +3,19 @@ import time
 
 class monster():
 
-    def __init__(self,type,name,health,beans,exp,level,reward,monsterattacks):
-        """
-        :param type: type of creature ()
-        :param name: name of the monster
-        :param health:
-        :param beans: beans awarded upon victory
-        :param exp:
-        level = level for damage/heal
-        """
-        self.level = level
-        self.name = name
-        ##self.attacks = monsterattacks[type]
-        self.health = health
-        self.beans = beans
-        self.exp = exp
-        self.type = type
-        self.conditiontime = 0
-        self.condition = ''
-        self.permcondition = ''
-        self.reward = reward
-        self.monsterattacks = monsterattacks
+    def __init__(self,type,name,health,beans,exp,level,reward,monsters):
+      
+        self.level = level  #monster level (scales dam/heal)
+        self.name = name    #monster name
+        self.health = health    #monster health
+        self.beans = beans #beans awarded upon death
+        self.exp = exp  #exp awarded upon death
+        self.type = type #monster class
+        self.conditiontime = 0 #how long does it apply condition
+        self.condition = '' #temp condition
+        self.permcondition = '' #perm condition
+        self.reward = reward  #item reward
+        self.monsters = monsters    #monster info
 
 
     def next_turn(self):
@@ -49,18 +41,20 @@ class monster():
 
 
     def print(self):
+        #print monster info
         print('<><><><><><><><><><><><><><><>')
         print("Monster: " , str(self.name), ' the ', str(self.type))
         print("Health: ", str(self.health))
 
     def heal(self,heal):
+        #heals monster
         if heal > 0:
             print('the opponent heals ', heal, ' HP')
         self.health += heal
 
     def random_attack(self):
-        ####
-        return random.choice(self.monsterattacks[str(self.type)]['attacklist'])
+        #generate a random attack from monster info
+        return random.choice(self.monsters[str(self.type)]['attacklist'])
 
     def set_condition(self,condition,permanence):
         """
@@ -72,6 +66,7 @@ class monster():
         self.conditiontime = permanence
 
     def print_condition(self):
+        #prints monsters conditions
         if self.conditiontime > 0:
             print('')
             print('Your opponent is ' , str(self.condition), 'for the next ' , str(self.conditiontime) ,' turns')
@@ -85,10 +80,9 @@ class monster():
     def get_condition(self):
         return [self.condition,self.conditiontime]
 
-    def heal_user(self,heal):
-        self.user.health += heal
 
     def condition_check_attackD(self, damage):
+        #applying damage modifying conditions
         if self.condition == 'weak':
             damage -= 5
             return int(damage)
@@ -99,6 +93,7 @@ class monster():
             return damage
 
     def condition_check_attackC(self, chance):
+        #applying hit chance modifying conditions
         if self.condition == 'focus':
             chance += 10
             return int(chance)
@@ -107,12 +102,14 @@ class monster():
             return int(chance)
         else:
             return chance
+
     def set_perm_condition(self,condition,time):
-        ### changed to not perm
+        #setting permenant conditions
         self.permcondition = condition
         self.conditiontime = time
 
     def condition_check_perm(self):
+        #check permanant conditions
         if self.permcondition == 'burning' and self.conditiontime > 0:
             self.take_damage(10)
             print('The opponent take 10 burning damage')

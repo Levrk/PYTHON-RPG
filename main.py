@@ -10,8 +10,8 @@ from GAME1 import lettergame
 # Run Program and follow along below to play the game
 # Last updated: 1/9/2023
 
-
 def battlesequence(battle):
+    #executes battle
     print('')
     battleintro(battle)
     print('')
@@ -22,12 +22,10 @@ def battlesequence(battle):
             if battle.monsterinstance.get_health() <= 0:
                 break
         battle.defense()
-        if battle.user.get_health() <= 0:
-            death()
+        
         battle.user.condition_check_perm()
         battle.monsterinstance.condition_check_perm()
-        if battle.user.get_health() <= 0:
-            death()
+        
         if battle.monsterinstance.get_health() <= 0:
             break
         battle.user.print_condition()
@@ -39,15 +37,13 @@ def battlesequence(battle):
     battle.reward()
     battlefinish(battle)
 
-
-
-
+#weapon info
 
 rustysword = {'name':'Rusty Sword', 'attacklist':['heavy','light'],'deflist':['parry','dodge'], 'hands':1,
               'heavy':{'conditions':['enraged',0],'damage':18,'chance':45, 'heal':0,
                      'text':'You lunge forward swinging the rusty blade with all your might',
                        'hit':'Your heavy attack hits for '},
-              'light':{'conditions':['',0],'damage':1000,'chance':70, 'heal':0,
+              'light':{'conditions':['',0],'damage':14,'chance':70, 'heal':0,
                      'text':'With a quick step you thrust the blade at your opponent',
                        'hit':'Your light attack hits for '},
               'parry':{'damagetaken':0,'chance':35,'damage':5}, 'dodge':{'damagetaken':0,'chance':50,'damage':0},
@@ -154,19 +150,15 @@ LavaStaff = {'name':'Lava Staff', 'attacklist':['incinerate','heal'],'deflist':[
               'pray for safety':{'damagetaken':0.2,'chance':60,'damage':0}, 'dodge':{'damagetaken':0,'chance':50,'damage':0},
               'weaponrating':"3.5 stars",'basedamage':'35 hp'}
 
-
-
-#userweapons is a dictionary of weapons
-userweapons = {'Rusty Sword':rustysword,'Sharpened Blade':SharpenedBlade,
+#weapons is a dictionary of weapons
+weapons = {'Rusty Sword':rustysword,'Sharpened Blade':SharpenedBlade,
                'Flame Staff':FlameStaff,'Sword of Focus':SwordofFocus,
                'Mallet of Malice':MalletofMalice,'Sanguine Sword':SanguineSword,
                'Staff of Chaos':StaffofChaos,'Sword of Blood and Flame':SwordofBloodandFlame,
                'Sword and Shield':SwordandShield, 'Lava Staff':LavaStaff,'Shadow Dagger':ShadowDagger}
 
 
-#########monsters
-
-
+#monster info
 Goblin = {'Scavenge':{'damage':[0,0,0], 'blockable':False, 'heal':[4,6,8], 'aim':0, 'conditions':['',0],
             'text':'The goblin scampers around the room, collecting little bits of filth from off of the floor'},
          'Claw':{'damage':[5,8,10], 'blockable':True, 'heal':[0,0,0], 'aim':0, 'conditions':['',0],
@@ -176,7 +168,6 @@ Beast = {'Rampage':{'damage':[6,10,12], 'blockable':True, 'heal':[0,0,0], 'aim':
             'text':'The beast roars and charges forward chaotically'},
          'Snarl':{'damage':[4,6,8], 'blockable':True, 'heal':[0,0,0], 'aim':0, 'conditions':['',0],
             'text':'The beast flashes a toothy grin and snaps down with its massive jaws'}, 'attacklist':['Rampage','Snarl']}
-
 
 Cockatrice = {'Peck':{'damage':[8,11,16], 'blockable':True, 'heal':[0,0,0], 'aim':0, 'conditions':['bleeding',2],
             'text':'The bird squacks and chirps as it attacks'},
@@ -205,24 +196,25 @@ FireSpirit = {'Incinerate':{'damage':[12,18,24], 'blockable':True, 'heal':[0,0,0
          'Explosion':{'damage':[18,22,25], 'blockable':True, 'heal':[0,0,0], 'aim':-25, 'conditions':['burning',1],
             'text':'The spirits eyes roll back as a thunderous sound fills the room'}, 'attacklist':['Incinerate','Explosion']}
 
-monsterattacks = {'Goblin':Goblin,"Beast":Beast,'Cockatrice':Cockatrice,'Wraith':Wraith,'Frozen Golem':FrozenGolem,'Demon':Demon,'Fire Spirit':FireSpirit}
+monsters = {'Goblin':Goblin,"Beast":Beast,'Cockatrice':Cockatrice,'Wraith':Wraith,'Frozen Golem':FrozenGolem,'Demon':Demon,'Fire Spirit':FireSpirit}
 
-####monsterinstances
-################### type      name   health  beans, exp level reward
-monster1 = monster('Goblin','Reginald',50,35,50,1,'Sharpened Blade',monsterattacks)
-monster2 = monster('Beast', 'Archibald',60,45,75,1,'Flame Staff',monsterattacks)
-monster3 = monster('Cockatrice', 'Chesmund',65,60,80,1,'Sword of Focus',monsterattacks)
-monster4 = monster('Wraith', 'Buford',80,50,90,1,'Mallet of Malice',monsterattacks)
-monster5 = monster('Frozen Golem', 'Winston',80,75,100,1,'Sanguine Sword',monsterattacks)
-monster6 = monster('Demon', 'Martin',100,90,100,2,'Sword of Blood and Flame',monsterattacks)
-monster7 = monster('Wraith', 'Alfred',110,100,110,2,'Lava Staff',monsterattacks)
-monster8 = monster('Fire Spirit','Bartholomew', 90,100,100,1,'Shadow Dagger',monsterattacks)
-monster9 = monster('Goblin','Gerald',100,80,150,3, 'Sword and Shield',monsterattacks)
-monster10 = monster('Cockatrice','Baxter',130,120,140,2,'reward',monsterattacks)
+###monsterinstances
+################### type     name   health\beans\exp\level reward  monster info
+monster1 = monster('Goblin','Reginald',50,35,50,1,'Sharpened Blade',monsters)
+monster2 = monster('Beast', 'Archibald',60,45,75,1,'Flame Staff',monsters)
+monster3 = monster('Cockatrice', 'Chesmund',65,60,80,1,'Sword of Focus',monsters)
+monster4 = monster('Wraith', 'Buford',80,50,90,1,'Staff of Chaos',monsters)
+monster5 = monster('Frozen Golem', 'Winston',80,75,100,1,'Sanguine Sword',monsters)
+monster6 = monster('Demon', 'Martin',100,90,100,2,'Sword of Blood and Flame',monsters)
+monster7 = monster('Wraith', 'Alfred',110,100,110,2,'Lava Staff',monsters)
+monster8 = monster('Fire Spirit','Bartholomew', 90,100,100,1,'Shadow Dagger',monsters)
+monster9 = monster('Goblin','Gerald',100,80,150,3, 'Sword and Shield',monsters)
+monster10 = monster('Cockatrice','Baxter',130,120,140,2,'Rusty Sword',monsters)
 
 ###playerinstance
-player1 = user('Borgus','Rusty Sword',100,0,100,userweapons)
+player1 = user('Borgus','Rusty Sword',100,0,100,weapons)
 
+###battle instances
 battle1 = battle(player1,Goblin,monster1)
 battle2 = battle(player1,Beast,monster2)
 battle3 = battle(player1,Cockatrice,monster3)
@@ -234,19 +226,15 @@ battle8 = battle(player1,FireSpirit,monster8)
 battle9 = battle(player1,Goblin,monster9)
 battle10 = battle(player1,Cockatrice,monster10)
 
-####letter game instances
-
+###letter game instances
 letters1 = lettergame('refried beans',5)
 letters2 = lettergame('jack and the beanstalk',5)
-letters3 = lettergame('is a chickpea a bean',5)
+letters3 = lettergame('beans on toast',5)
 
-
-
-
-
+#waiting room info
 options = ['stats','Stats','save','Save','intro','Intro','1','2','3','4','5','6','7','8','9','10','11','12','Inventory','inventory','Reset','reset']
 closed = {'1':False,'2':False,'3':False,'4':False,'5':False,'6':False,'7':False,'8':False,'9':False,'10':False,'11':False,'12':False}
-#print(player1.get_weapon())
+
 
 
 def battleintro(battle):
@@ -257,6 +245,7 @@ def battlefinish(battle):
 
 
 def equipmentcheck ():
+    #reads out inventory list and equips based on selection
     player1.get_inventory()
     while True:
         try:
@@ -267,9 +256,8 @@ def equipmentcheck ():
     print('')
     time.sleep(2)
 
-
-
 def title():
+    ###prints title sequence
     input('press enter')
     print('')
     print(
@@ -464,11 +452,9 @@ def check_room_completion():
         print(''.join(('-*| ', x ,' |*-')),end='')
     print('')
 
-#def check_game_completion()  ######needs work
-   # if roomscompleted > 0
-     #   final
 
 def waiting_room():
+    #prints waiting room
     print('#**#' * 36)
     print(('# # # # ' * 4) +'# ' + '[ Inventory ] ' + (' # # # # '  * 2) + '[ Reset ]' +(' # # # # '  * 2) + ' [ Stats ]' + ( '# '  * 21))
     print('*##*' * 36)
@@ -495,6 +481,7 @@ def waiting_room():
     print('*##******##*' * 12)
 
 def entrance(room):
+    #prints a zoomed in version of the room selection
     room = str(room)
     if len(str(room))== 1:
         room = room + ' '
@@ -513,6 +500,7 @@ def entrance(room):
 
 
 def letters():
+    #organizes three
     wins = 0
     if letters1.game():
         wins += 1
@@ -521,15 +509,25 @@ def letters():
     if letters3.game():
         wins += 1
     if wins >= 2:
-        chest('Staff of Chaos')
+        print('')
+        print('  ------------------------------')
+        print(' |       |              |       |')
+        print(' |----------[  <()>  ]----------|    ')
+        print(' |       |              |       |')
+        print(' |       |              |       |')
+        print('| _______|______________|_______ |')
+        input('press enter to open...')
+        
+        print('')
+        time.sleep(1)
+        player1.acquire("Mallet of Malice")
     else:
         potion(-20)
         player1.maxhealth -= 20
-        'Hahahahaha  not good enough'
-
-
+        print('Hahahahaha  not good enough')
 
 def potion(health):
+    #user recieves potion
     print('')
     print('before you sits a glass with a heart on it\'s label')
     print('probably shouldn\'t drink something you just found on the ground...')
@@ -545,20 +543,16 @@ def potion(health):
     print('              ------   ')
     print('')
     time.sleep(1)
+    print('')
+    input('Press enter to drink')
+    print('')
     player1.gain_health(health)
-    print('')
-    print('Press enter to drink')
-    print('')
-    print('You gain ' + str(health) + ' health')
 
-
-
-
-def death():
-    raise Exception('hahahaha you died')
 
 def maingame():
+    ##exicutes main gaim
     def complete_stats():
+        #prints stats
         print('')
         print('Rooms Completed: ' + str(roomscompleted))
         print('')
@@ -576,18 +570,16 @@ def maingame():
         input('Press enter to return...')
 
     def room_complete(room,roomscompleted):
+        #indicates a room has been completed
         options.remove(str(room))
         closed[str(room)] = True
         return roomscompleted + 1
 
     roomscompleted = 0
     damagetaken = 0
-    ##
+    
     title()
-
     intro()
-
-
 
     while True:
         waiting_room()
@@ -607,6 +599,7 @@ def maingame():
             entrance(2)
             print(battle2)
             battlesequence(battle2)
+            potion(20)
             roomscompleted = room_complete(2,roomscompleted)
         elif x == '3':
             entrance(3)
@@ -637,6 +630,7 @@ def maingame():
             entrance(8)
             print(battle6)
             battlesequence(battle6)
+            potion(35)
             roomscompleted = room_complete(8, roomscompleted)
         elif x == '9':
             entrance(9)
@@ -647,6 +641,7 @@ def maingame():
             entrance(10)
             print(battle10)
             battlesequence(battle8)
+            potion(25)
             roomscompleted = room_complete(10, roomscompleted)
         elif x == '11':
             entrance(11)
@@ -657,6 +652,7 @@ def maingame():
             entrance(12)
             print(battle10)
             battlesequence(battle10)
+            potion(30)
             roomscompleted = room_complete(12, roomscompleted)
             print('room 12')
         elif x == 'Save' or x == 'save':
@@ -671,7 +667,6 @@ def maingame():
         elif x == 'Reset' or x == 'reset':
             print('This feature has yet to be implemented')
             print('Please try again soon :)')
-
 
 
 maingame()
