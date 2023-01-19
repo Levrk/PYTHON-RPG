@@ -549,7 +549,7 @@ def potion(health):
     player1.gain_health(health)
 
 
-def maingame():
+def mainGame():
     ##exicutes main gaim
     def complete_stats():
         #prints stats
@@ -575,6 +575,37 @@ def maingame():
         closed[str(room)] = True
         return roomscompleted + 1
 
+    def endGame():
+        print('')
+        print('')
+        time.sleep(2)
+        print('As the dust settles you feel a sense of calm wash over you')
+        time.sleep(2.5)
+        print('')
+        print('The walls of the room seem suddenly lifelike and organic')
+        time.sleep(3)
+        print('')
+        print('You can sense the energy of this place pulsating like a dying maggot writhing in a large bowl')
+        time.sleep(4)
+        print('')
+        print('Until eventually the movement stops')
+        time.sleep(2.5)
+        print('')
+        print('And time itself stops, and stands still ')
+        time.sleep(2.5)
+        print('')
+        print('Hovering above the precipice of some great event which may or may not occur')
+        time.sleep(3)
+        print('')
+        print('Like a question peevishly muttured in the presence of some mad and ancient god')
+        time.sleep(3.5)
+        print('')
+        print('\" Is it finally over? \"')
+        print('')
+        print('')
+        time.sleep(5)
+        raise ValueError('Game Over...')
+        
     roomscompleted = 0
     damagetaken = 0
     
@@ -651,10 +682,9 @@ def maingame():
         elif x == '12':
             entrance(12)
             print(battle10)
-            battlesequence(battle10)
-            potion(30)
+            #battlesequence(battle10)
             roomscompleted = room_complete(12, roomscompleted)
-            print('room 12')
+            endGame()
         elif x == 'Save' or x == 'save':
             print('This feature has yet to be implemented')
             print('Please try again soon :)')
@@ -669,4 +699,4 @@ def maingame():
             print('Please try again soon :)')
 
 
-maingame()
+mainGame()
